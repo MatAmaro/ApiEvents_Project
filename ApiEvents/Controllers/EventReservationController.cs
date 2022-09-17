@@ -10,6 +10,9 @@ namespace ApiEvents.Controllers
     [Route("[controller]")]
     [Consumes("application/json")]
     [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
     [Authorize]
     public class EventReservationController : ControllerBase
     {
@@ -34,7 +37,6 @@ namespace ApiEvents.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
         [Authorize(Roles = "admin,cliente")]
         public ActionResult<EventReservation> GetEventReservationByNameAndIdEvent(long idEvent, string personName)
         {
@@ -52,7 +54,6 @@ namespace ApiEvents.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
         [Authorize(Roles = "admin,cliente")]
         public ActionResult<List<EventReservation>> GetEventReservationByNameAndEventTitle(string title, string personName)
         {
@@ -68,8 +69,7 @@ namespace ApiEvents.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]      
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]     
         [Authorize(Roles = "admin,cliente")]
         [ServiceFilter(typeof(ActionFilterReservationDuplicated))]
         public IActionResult InsertEventReservation(EventReservation eventReservation)
@@ -87,7 +87,6 @@ namespace ApiEvents.Controllers
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
         [Authorize(Roles = "admin")]
         public ActionResult<List<EventReservation>> UpdateEventReservation(long idEvent, string personName, EventReservation eventReservation)
         {
@@ -109,7 +108,6 @@ namespace ApiEvents.Controllers
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
         [Authorize(Roles = "admin")]
         public ActionResult<List<EventReservation>> UpdateEventReservationQuantity(long idEvent, string personName, int quantity)
         {
@@ -130,8 +128,7 @@ namespace ApiEvents.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]       
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]      
         [Authorize(Roles = "admin")]
         public IActionResult DeleteEventReservavtion(long idEvent, string personName)
         {
