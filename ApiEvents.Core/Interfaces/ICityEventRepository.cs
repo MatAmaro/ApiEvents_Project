@@ -10,6 +10,8 @@ namespace ApiEvents.Core.Interfaces
         List<CityEvent> GetCityEventsByTitle(string title);
         List<CityEvent> GetCityEventsByPriceAndDate(decimal priceMin, decimal priceMax, DateTime date);
         List<CityEvent> GetCityEventsByLocalAndDate(string local, DateTime date);
+        CityEvent GetCityEventByTitleAndLocalAndDate(string title, string local, DateTime date);
+        CityEvent GetCityEventInactivated(long idEvent);
         bool InsertCityEvent(CityEvent cityEvent);
         bool UpdateCityEvent(CityEvent cityEvent, long idEvent);
         bool DeleteCityEvent(string title, string local);

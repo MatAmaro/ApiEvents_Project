@@ -1,5 +1,7 @@
 ﻿using ApiEvents.Core.Interfaces;
 using ApiEvents.Core.Models;
+using ApiEvents.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiEvents.Controllers
@@ -8,6 +10,10 @@ namespace ApiEvents.Controllers
     [Route("[controller]")]
     [Consumes("application/json")]
     [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status417ExpectationFailed)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
+    [Authorize]
     public class CityEventController : ControllerBase
     {
         private readonly ICityEventService _cityEventService;
@@ -18,7 +24,8 @@ namespace ApiEvents.Controllers
         }
 
         [HttpGet("eventos/consultar")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]       
+        [AllowAnonymous]
         public ActionResult<List<CityEvent>> GetCityEvents()
         {
             return Ok(_cityEventService.GetCityEvents());
@@ -28,6 +35,7 @@ namespace ApiEvents.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [AllowAnonymous]
         public ActionResult<CityEvent> GetCityEventByTitleAndLocal(string title, string local)
         {
 
@@ -42,6 +50,7 @@ namespace ApiEvents.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [AllowAnonymous]
         public ActionResult<List<CityEvent>> GetCityEventByTitle(string title)
         {
 
@@ -59,6 +68,7 @@ namespace ApiEvents.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [AllowAnonymous]
         public ActionResult<List<CityEvent>> GetCityEventsByPriceAndDate(decimal priceMin, decimal priceMax, DateTime date)
         {
             var cityEvents = _cityEventService.GetCityEventsByPriceAndDate(priceMin, priceMax, date);
@@ -73,6 +83,7 @@ namespace ApiEvents.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [AllowAnonymous]
         public ActionResult<List<CityEvent>> GetCityEventsByLocalAndDate(string local, DateTime date)
         {
             var cityEvents = _cityEventService.GetCityEventsByLocalAndDate(local, date);
@@ -87,6 +98,10 @@ namespace ApiEvents.Controllers
         [HttpPost("eventos/inserir")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ServiceFilter(typeof(ActionFilterEventDuplicated))]
+        [Authorize(Roles = "admin")]
         public IActionResult InsertCityEvent(CityEvent cityEvent)
         {
             if (!_cityEventService.InsertCityEvent(cityEvent))
@@ -100,6 +115,9 @@ namespace ApiEvents.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Roles = "admin")]
         public ActionResult<List<CityEvent>> UpdateCityEvent(CityEvent cityEvent, long idEvent)
         {
             List<CityEvent> cityEvents = new();
@@ -121,6 +139,9 @@ namespace ApiEvents.Controllers
         [HttpDelete("eventos/delete/{title}/{local}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Roles = "admin")]
         public IActionResult DeleteCityEvent(string title, string local)
         {
             if (!_cityEventService.DeleteCityEvent(title, local))
@@ -132,7 +153,12 @@ namespace ApiEvents.Controllers
 
         [HttpDelete("eventos/delete/{IdEvent}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ServiceFilter(typeof(ActionFilterCheckInactivatedEvent))]
+        [Authorize(Roles = "admin")]
         public IActionResult DeleteCityEventByID(long IdEvent)
         {
             var reservationsQtt = _cityEventService.ReservationQuantity(IdEvent);

@@ -47,6 +47,9 @@ namespace ApiEvents.Core.Services
             return _reservationRepository.DeleteEventReservation(idEvent, personName);
         }
 
-        
+        public bool UpdateEventReservationQuantity(long idEvent, string personName, int quantity)
+        {
+            return _reservationRepository.UpdateEventReservationQuantity(idEvent, personName, quantity);
+        }
     }
 }

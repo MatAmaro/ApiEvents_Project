@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ApiEvents.Core.Models
 {
     public class EventReservation
     {
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public long IdReservation { get; set; }
 
         [Required(ErrorMessage = "O id do evento é obrigatório")]

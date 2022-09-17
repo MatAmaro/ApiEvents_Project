@@ -76,6 +76,15 @@ namespace ApiEvents.Core.Services
         {
             return _cityEventRepository.disableStatus(idEvent);
         }
-     
+
+        public CityEvent GetCityEventByTitleAndLocalAndDate(string title, string local, DateTime date)
+        {
+            return _cityEventRepository.GetCityEventByTitleAndLocalAndDate(title,local,date);
+        }
+
+        public CityEvent GetCityEventInactivated(long idEvent)
+        {
+            return _cityEventRepository.GetCityEventInactivated(idEvent);
+        }
     }
 }

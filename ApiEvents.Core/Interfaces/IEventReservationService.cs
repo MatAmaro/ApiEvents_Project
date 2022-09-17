@@ -9,6 +9,7 @@ namespace ApiEvents.Core.Interfaces
         List<EventReservation> GetEventReservationByNameAndEventTitle(string personName, string title);
         bool InsertEventReservation(EventReservation eventReservation);
         bool UpdateEventReservation(long idEvent, string personName, EventReservation eventReservation);
+        bool UpdateEventReservationQuantity(long idEvent, string personName, int quantity);
         bool DeleteEventReservation(long idEvent, string personName);
 
     }

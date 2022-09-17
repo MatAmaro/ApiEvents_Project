@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ApiEvents.Core.Models
 {
     public class CityEvent
     {
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public long IdEvent { get; set; }
 
         [Required]
